@@ -40,7 +40,7 @@ properties:
     default: LogMessage,Error
   firehose.events_to_stackdriver_monitoring:
     description: Whitelisted event types to send to Stackdriver Monitoring (comma separated). Valid values include CounterEvent,ValueMetric,ContainerMetric
-    default: CounterEvent,ValueMetric,ContainerMetric
+    default: ""
   firehose.subscription_id:
     description: Subscription ID for the firehose nozzle
     default: stackdriver-nozzle

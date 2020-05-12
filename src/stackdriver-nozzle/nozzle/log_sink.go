@@ -91,8 +91,20 @@ func (ls *logSink) parseEnvelope(envelope *events.Envelope) messages.Log {
 		if err != nil {
 			ls.logger.Error("error parsing logMessage", err)
 		} else {
-			message := ls.parseMessage(logMessage.GetMessage())
+			rawMessage := logMessage.GetMessage()
+			message := ls.parseMessage(rawMessage)
+			var js map[string]interface{}
+			err = json.Unmarshal([]byte(rawMessage), &js)
+			if err == nil {
+				if str, ok := js["msg"].(string); ok {
+				  message = str
+				  delete(js, "msg")
+				}
 
+				for key, element := range js {
+					logMessageMap[key] = element
+				}
+			}
 			// This is snake_cased to match the field in the protobuf. The other
 			// fields we pass to Stackdriver are camelCased. We arbitrarily chose
 			// to remain consistent with the protobuf.
